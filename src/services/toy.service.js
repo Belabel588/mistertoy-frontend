@@ -2,8 +2,8 @@ import { utilService } from './util.service.js'
 import { storageService } from './async-storage.service.js'
 
 const TOY_KEY = 'toyDB'
-const labels = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle',
-  'Outdoor', 'Battery Powered']
+// const labels = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle',
+// 'Outdoor', 'Battery Powered']
 
 _createToys()
 export const toyService = {
@@ -22,19 +22,26 @@ window.cs = toyService
 function query(filterBy = {}) {
   return storageService.query(TOY_KEY)
     .then(toys => {
-      if (filterBy.txt) {
-        const regExp = new RegExp(filterBy.txt, 'i')
-        toys = toys.filter(toy => regExp.test(toy.txt))
+      if (filterBy.name) {
+        const regExp = new RegExp(filterBy.name, 'i')
+        toys = toys.filter(toy => regExp.test(toy.name))
       }
 
-      if (filterBy.status) {
-        const isDone = filterBy.status === 'done'
-        toys = toys.filter(toy => toy.isDone === isDone)
+      // if (filterBy.status) {
+      // //   const isDone = filterBy.status === 'done'
+      //   toys = toys.filter(toy => toy.isDone === isDone)
+      // }
+
+      if (filterBy.price) {
+        toys = toys.filter(toy => toy.price >= filterBy.price);
       }
 
-      if (filterBy.importance) {
-        toys = toys.filter(toy => toy.importance >= filterBy.importance)
+      if (filterBy.labels && filterBy.labels.length > 0 && filterBy.labels[0] !== '') {
+        toys = toys.filter(toy =>
+          toy.labels.some(label => filterBy.labels.includes(label))
+        )
       }
+
       return toys
     })
 }
@@ -53,29 +60,33 @@ function remove(toyId) {
 
 function save(toy) {
   if (toy._id) {
-    // TODO - updatable fields
+    console.log('updating toy:', toy);
     toy.updatedAt = Date.now()
     return storageService.put(TOY_KEY, toy)
   } else {
     toy.createdAt = toy.updatedAt = Date.now()
-
+    console.log('updating toy:', toy);
     return storageService.post(TOY_KEY, toy)
+
   }
 }
 
-function getEmptyToy(name = '', price = 0, labels = []) {
+function getEmptyToy() {
+  const labels = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle', 'Outdoor', 'Battery Powered'];
+  const shuffledLabels = utilService.shuffleArray(labels);
+  const selectedLabels = shuffledLabels.slice(0, 2);
+
   return {
-    _id: utilService.makeId(),
-    name,
-    price,
-    labels,
-    createdAt: Date.now(),
-    inStock: true,
+    name: 'Toy-' + (Date.now() % 1000),
+    price: utilService.getRandomIntInclusive(10, 100),
+    labels: selectedLabels,
+    inStock: utilService.getRandomIntInclusive(0, 1) ? true : false,
+    createdAt: Date.now()
   }
 }
 
 function getDefaultFilter() {
-  return { txt: '', importance: 0, status: 'all' }
+  return { name: '', price: 0, inStock: false, labels: [] }
 }
 
 function getFilterFromSearchParams(searchParams) {
