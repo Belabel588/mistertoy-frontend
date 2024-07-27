@@ -20,7 +20,7 @@ export function ToyIndex() {
   // Special hook for accessing search-params:
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const defaultFilter = toyService.getDefaultFilter
+  const defaultFilter = toyService.getFilterFromSearchParams(searchParams)
 
   // const [filterBy, setFilterBy] = useState(defaultFilter)
   const filterBy = useSelector(state => state.filterBy)
@@ -54,7 +54,7 @@ export function ToyIndex() {
       .then(savedToy => showSuccessMsg(`Toy is ${(savedToy.isInStock) ? 'back in stock' : 'out of stock'}`))
     // .catch(err => showErrorMsg('Cannot toggle toy status'))
   }
-
+  console.log('ToyIndex filterBy:', filterBy);
   console.log('ToyIndex toys:', toys);
   return (
     <section className="toy-index">

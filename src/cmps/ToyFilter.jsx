@@ -16,7 +16,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
 
     switch (target.type) {
       case 'number':
-        value = value
+        value = +value
         break;
       case 'checkbox':
         value = target.checked;
@@ -44,7 +44,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
   }
 
   const { name, price, labels } = filterByToEdit;
-  // console.log(filterByToEdit);
+  console.log(filterByToEdit);
   return (
     <section className="toy-filter">
       <h2>Filter Toys</h2>
@@ -57,7 +57,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
           id="name"
           name="name"
         />
-        <label htmlFor="price">Price: </label>
+        <label htmlFor="price"> Max Price: </label>
         <input
           value={price}
           onChange={handleChange}
@@ -67,7 +67,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
           name="price"
         />
         <label htmlFor="label">Label: </label>
-        <select id="label" name="label" value={labels && labels.length > 0 ? labels[0] : ''} onChange={onLabelChange}>
+        <select id="label" name="label" value={labels[0] || ''} onChange={onLabelChange}>
           <option value="">All</option>
           <option value="On wheels">On wheels</option>
           <option value="Box game">Box game</option>
