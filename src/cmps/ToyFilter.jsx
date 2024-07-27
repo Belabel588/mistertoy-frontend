@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 
 export function ToyFilter({ filterBy, onSetFilterBy }) {
-  console.log(filterBy);
+  // console.log(filterBy);
   const [filterByToEdit, setFilterByToEdit] = useState({ ...filterBy });
-  console.log(filterByToEdit);
+  // console.log(filterByToEdit);
 
   useEffect(() => {
     // Notify parent
@@ -44,7 +44,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
   }
 
   const { name, price, labels } = filterByToEdit;
-  console.log(filterByToEdit);
+  // console.log(filterByToEdit);
   return (
     <section className="toy-filter">
       <h2>Filter Toys</h2>
@@ -67,7 +67,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
           name="price"
         />
         <label htmlFor="label">Label: </label>
-        <select id="label" name="label" value={labels[0] || ''} onChange={onLabelChange}>
+        <select id="label" name="label" value={labels && labels.length > 0 ? labels[0] : ''} onChange={onLabelChange}>
           <option value="">All</option>
           <option value="On wheels">On wheels</option>
           <option value="Box game">Box game</option>

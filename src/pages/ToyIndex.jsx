@@ -20,7 +20,7 @@ export function ToyIndex() {
   // Special hook for accessing search-params:
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const defaultFilter = toyService.getFilterFromSearchParams(searchParams)
+  const defaultFilter = toyService.getDefaultFilter
 
   // const [filterBy, setFilterBy] = useState(defaultFilter)
   const filterBy = useSelector(state => state.filterBy)
