@@ -54,8 +54,8 @@ export function ToyIndex() {
       .then(savedToy => showSuccessMsg(`Toy is ${(savedToy.isInStock) ? 'back in stock' : 'out of stock'}`))
     // .catch(err => showErrorMsg('Cannot toggle toy status'))
   }
-  console.log('ToyIndex filterBy:', filterBy);
-  console.log('ToyIndex toys:', toys);
+  // console.log('ToyIndex filterBy:', filterBy);
+  // console.log('ToyIndex toys:', toys);
   return (
     <section className="toy-index">
       <ToyFilter filterBy={filterBy} onSetFilterBy={setFilterBy} />

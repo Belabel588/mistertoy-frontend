@@ -16,20 +16,21 @@ export const toyService = {
 }
 
 function query(filterBy = {}) {
+  console.log('filterBy in toy.service query:', filterBy);
   return httpService.get(BASE_URL, filterBy)
-    .then(toys => {
-      if (filterBy.name) {
-        toys = toys.filter(toy => toy.name.toLowerCase().includes(filterBy.name.toLowerCase()));
-      }
-      if (filterBy.price) {
-        toys = toys.filter(toy => toy.price <= filterBy.price);
-      }
-      if (filterBy.labels && filterBy.labels.length > 0) {
-        toys = toys.filter(toy => filterBy.labels.every(label => toy.labels.includes(label)));
-      }
-      console.log('Filtered toys:', toys); // Debugging log
-      return toys;
-    });
+  // .then(toys => {
+  //       if (filterBy.name) {
+  //         toys = toys.filter(toy => toy.name.toLowerCase().includes(filterBy.name.toLowerCase()));
+  //       }
+  //       if (filterBy.price) {
+  //         toys = toys.filter(toy => toy.price <= filterBy.price);
+  //       }
+  //       if (filterBy.labels && filterBy.labels.length > 0) {
+  //         toys = toys.filter(toy => filterBy.labels.every(label => toy.labels.includes(label)));
+  //       }
+  //       console.log('Filtered toys:', toys); // Debugging log
+  //       return toys;
+  //     });
 }
 
 function getById(toyId) {
@@ -59,21 +60,21 @@ function save(toy) {
 }
 
 function getEmptyToy() {
-  const labels = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle', 'Outdoor', 'Battery Powered'];
-  const shuffledLabels = utilService.shuffleArray(labels);
-  const selectedLabels = shuffledLabels.slice(0, 2);
+  const label = ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle', 'Outdoor', 'Battery Powered'];
+  const shuffledLabel = utilService.shuffleArray(label);
+  const selectedLabel = shuffledLabel.slice(0, 2);
 
   return {
     name: 'Toy-' + (Date.now() % 1000),
     price: utilService.getRandomIntInclusive(10, 100),
-    labels: selectedLabels,
+    label: selectedLabel,
     inStock: utilService.getRandomIntInclusive(0, 1) ? true : false,
     createdAt: Date.now()
   }
 }
 
 function getDefaultFilter() {
-  return { name: '', price: 0, inStock: false, labels: [] }
+  return { name: '', price: 0, inStock: false, label: [] }
 }
 
 function getFilterFromSearchParams(searchParams) {

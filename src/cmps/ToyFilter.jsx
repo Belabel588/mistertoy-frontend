@@ -33,8 +33,8 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
     const { value: label } = target;
 
     setFilterByToEdit((prev) => {
-      const updatedLabels = [label, ...prev.labels.slice(1)];
-      return { ...prev, labels: updatedLabels };
+      const updatedLabel = [label, ...prev.label.slice(1)];
+      return { ...prev, label: updatedLabel };
     });
   }
 
@@ -43,7 +43,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
     onSetFilterBy(filterByToEdit);
   }
 
-  const { name, price, labels } = filterByToEdit;
+  const { name, price, label } = filterByToEdit;
   console.log(filterByToEdit);
   return (
     <section className="toy-filter">
@@ -67,7 +67,7 @@ export function ToyFilter({ filterBy, onSetFilterBy }) {
           name="price"
         />
         <label htmlFor="label">Label: </label>
-        <select id="label" name="label" value={labels[0] || ''} onChange={onLabelChange}>
+        <select id="label" name="label" value={label[0] || ''} onChange={onLabelChange}>
           <option value="">All</option>
           <option value="On wheels">On wheels</option>
           <option value="Box game">Box game</option>

@@ -5,70 +5,60 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export function ToyEdit() {
-
-  const [toyToEdit, setToyToEdit] = useState(toyService.getEmptyToy())
+  const [toyToEdit, setToyToEdit] = useState(null)
   const navigate = useNavigate()
   const params = useParams()
 
   useEffect(() => {
     if (params.toyId) loadToy()
-  }, [])
+    else setToyToEdit(toyService.getEmptyToy())
+  }, [params.toyId])
 
-  function loadToy() {
-    toyService.get(params.toyId)
-      .then(setToyToEdit)
-      .catch(err => console.log('err:', err))
-  }
-
-  function handleChange({ target }) {
-    const field = target.name
-    let value = target.value
-
-    switch (target.type) {
-      case 'number':
-      case 'range':
-        value = +value || ''
-        break
-
-      case 'checkbox':
-        value = target.checked
-        break
-
-      default:
-        break
+  const loadToy = async () => {
+    try {
+      const toy = await toyService.getById(params.toyId)
+      setToyToEdit(toy)
+    } catch (err) {
+      showErrorMsg('Cannot load toy')
+      navigate('/toy')
     }
-
-    setToyToEdit(prevToyToEdit => ({ ...prevToyToEdit, [field]: value }))
   }
 
-  function onSaveToy(ev) {
+  const handleChange = (ev) => {
+    const { name, value } = ev.target
+    setToyToEdit(prevToy => ({ ...prevToy, [name]: value }))
+  }
+
+  const onSaveToy = async (ev) => {
     ev.preventDefault()
-    toyService.save(toyToEdit)
-      .then((savedToy) => {
-        navigate('/toy')
-        showSuccessMsg(`Toy Saved (id: ${savedToy._id})`)
-      })
-      .catch(err => {
-        showErrorMsg('Cannot save toy')
-        console.log('err:', err)
-      })
+    try {
+      await toyService.save(toyToEdit)
+      showSuccessMsg('Toy saved!')
+      navigate('/toy')
+    } catch (err) {
+      showErrorMsg('Cannot save toy')
+    }
   }
 
-  const { name, Price, category } = toyToEdit
+  if (!toyToEdit) return <div>Loading...</div>
 
   return (
-    <section className="toy-edit">
-      <form onSubmit={onSaveToy} >
-        <label htmlFor="name">Name:</label>
-        <input onChange={handleChange} value={name} type="text" name="name" id="name" />
-
-        <label htmlFor="Price">Price:</label>
-        <input onChange={handleChange} value={Price} type="number" name="Price" id="Price" />
-
-        <label htmlFor="category">Category:</label>
-        <input onChange={handleChange} value={category} type="text" name="category" id="category" />
-
-        <button>Save</button>
+    <section>
+      <h2>{toyToEdit._id ? 'Edit' : 'Add'} Toy</h2>
+      <form onSubmit={onSaveToy}>
+        <label>
+          Name:
+          <input type="text" name="name" value={toyToEdit.name || ''} onChange={handleChange} />
+        </label>
+        <label>
+          Price:
+          <input type="number" name="price" value={toyToEdit.price || 0} onChange={handleChange} />
+        </label>
+        <label>
+          In Stock:
+          <input type="checkbox" name="inStock" checked={toyToEdit.inStock || false} onChange={handleChange} />
+        </label>
+        <button type="submit">Save</button>
       </form>
     </section>
   )
